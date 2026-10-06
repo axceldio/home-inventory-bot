@@ -88,5 +88,33 @@ async def on_message(message):
             await message.channel.send(f"❌ **{item.title()}** belum ada.")
         else:
             await message.channel.send(f"📦 **{item.title()}** — {stock}")
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    if not isinstance(message.channel, discord.TextChannel):
+        return
+
+    if message.channel.name.lower() != "inventory":
+        return
+
+    text = message.content.strip()
+
+    # HAPUS BARANG
+    if text.lower().startswith("!hapus "):
+        item = text[7:].strip().lower()
+
+        if item in inventory:
+            del inventory[item]
+            await message.channel.send(
+                f"🗑️ **{item.title()}** sudah dihapus dari inventory."
+            )
+        else:
+            await message.channel.send(
+                f"❌ **{item.title()}** tidak ditemukan."
+            )
+
+        return
 
 bot.run(TOKEN)
